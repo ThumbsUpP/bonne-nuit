@@ -29,7 +29,8 @@ export class PromptBuilder {
       INSTRUCTIONS POUR LES IMAGES (CRUCIAL) :
       1. D'abord, définis une description visuelle précise du personnage principal (couleur des cheveux, vêtements, accessoires).
       2. Définis un style artistique cohérent (ex: "illustration vectorielle colorée et plate", "aquarelle douce").
-      3. Pour CHAQUE "imageDescription" dans les pages, utilise ces éléments mais adapte-les à l'action de la page.
+      3. IMPORTANT : Pas de fond blanc. Utilise des scènes complètes, colorées et détaillées (ex: forêt, chambre, espace).
+      4. Le texte de l'histoire DOIT être intégré dans l'image de manière artistique et lisible.
 
       Retourne le résultat strictement sous forme d'objet JSON avec le format suivant :
       {
@@ -40,7 +41,7 @@ export class PromptBuilder {
         "pages": [
           {
             "textContent": "Texte de la page 1...",
-            "imageDescription": "Description de l'image pour la page 1 (en anglais)..."
+            "imageDescription": "Description de l'image (en anglais). Inclure : 'Full scene, no white background. Text to render: [Texte de la page 1]'"
           },
           ...
         ]

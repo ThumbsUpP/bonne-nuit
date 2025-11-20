@@ -1,0 +1,36 @@
+{
+  "title": "Lapinou et le Grand Voyage",
+  "ageGroup": "1.5 ans",
+  "characterDescription": "Lapinou is a small, fluffy white bunny with soft, slightly pink insides to his ears. He wears a tiny sky-blue overall, a small red bandana tied neatly around his neck, and a little brown leather backpack on his back. His eyes are bright and curious.",
+  "artStyle": "Soft, whimsical digital painting with a slightly textured feel, reminiscent of classic children's picture books. The color palette is bright yet gentle, with warm lighting and smooth transitions.",
+  "pages": [
+    {
+      "textContent": "Lapinou est un gentil lapin.",
+      "imageDescription": "Lapinou, the small white bunny with his blue overall, red bandana, and brown backpack, is sitting comfortably in a cozy, sunlit meadow filled with colorful wildflowers. He is looking up with curious eyes. The grass is lush green, and there are gentle rolling hills in the background under a soft blue sky. The overall feeling is peaceful and warm. Full scene, no white background. Text to render: [Lapinou est un gentil lapin.]"
+    },
+    {
+      "textContent": "Il veut voir le monde !",
+      "imageDescription": "Lapinou is standing at the edge of the same meadow, looking out towards a distant, slightly blurred horizon where different landscapes can be subtly hinted at (a tiny mountain peak, a distant ocean shimmer). He has a look of wonder and excitement on his face. The sun is still warm. Full scene, no white background. Text to render: [Il veut voir le monde !]"
+    },
+    {
+      "textContent": "Hop, il prend son sac.",
+      "imageDescription": "Lapinou is now in his little burrow-like room, which is cozy and simple with a small wooden bed and a tiny window. He is adjusting his brown leather backpack, which looks perfectly fitted on his back. A tiny, half-packed suitcase is next to him, and a small, colorful globe sits on a shelf. The room is softly lit with warm light coming from the window. Full scene, no white background. Text to render: [Hop, il prend son sac.]"
+    },
+    {
+      "textContent": "Hop, il voit un grand bateau.",
+      "imageDescription": "Lapinou is standing on a sandy beach, looking at a big, friendly-looking red and white striped sailboat on the calm blue ocean. The sun is shining brightly, and there are a few fluffy clouds in the sky. Gentle waves lap at the shore. Lapinou's ears are perked up, full of wonder. Full scene, no white background. Text to render: [Hop, il voit un grand bateau.]"
+    },
+    {
+      "textContent": "Hop, il voit un gros avion.",
+      "imageDescription": "Lapinou is now high above the clouds, looking out from a window of a big, blue and white airplane. He is strapped into a tiny seat. Below him, fluffy white clouds stretch like a soft carpet, and a clear blue sky is visible above. He looks excited and a little bit awestruck. Full scene, no white background. Text to render: [Hop, il voit un gros avion.]"
+    },
+    {
+      "textContent": "Hop, il voit les étoiles !",
+      "imageDescription": "Lapinou is now in a whimsical, stylized spaceship, looking out a large circular window. Outside, a deep indigo night sky is filled with twinkling yellow and white stars, a crescent moon, and distant, colorful planets. He looks amazed, his eyes wide with wonder. The spaceship interior is simple and futuristic but friendly. Full scene, no white background. Text to render: [Hop, il voit les étoiles !]"
+    },
+    {
+      "textContent": "Lapinou est très content !",
+      "imageDescription": "Lapinou is back in his cozy meadow, lying happily on his back in the soft grass, looking up at the sky. His backpack is next to him. He has a wide, joyful smile. The sun is setting, casting warm orange and pink hues across the sky and the meadow. A few fireflies begin to glow around him. Full scene, no white background. Text to render: [Lapinou est très content !]"
+    }
+  ]
+}
