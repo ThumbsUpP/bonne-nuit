@@ -10,17 +10,17 @@ export class PromptBuilder {
 
     if (age <= 3) {
       styleInstruction = 'Utilise des mots très simples et des phrases courtes. Un langage répétitif et rythmé est bon.';
-      structureInstruction = 'Crée 5-7 pages. Chaque page doit avoir exactement 1 courte phrase et une description détaillée de l\'image.';
+      structureInstruction = 'Crée 5-7 pages. Chaque page doit avoir exactement 3 ou 4 courtes phrases et une description détaillée de l\'image.';
     } else if (age <= 6) {
       styleInstruction = 'Utilise un vocabulaire simple mais des phrases complètes. Ton engageant et amusant.';
-      structureInstruction = 'Crée 7-10 pages. Chaque page doit avoir 2-3 phrases et une description détaillée de l\'image.';
+      structureInstruction = 'Crée 7-10 pages. Chaque page doit avoir 6 ou 7 phrases et une description détaillée de l\'image.';
     } else {
       styleInstruction = 'Utilise un vocabulaire et des structures de phrases plus complexes. Un ton aventureux ou mystérieux est approprié.';
-      structureInstruction = 'Crée 10-12 pages. Chaque page doit avoir un court paragraphe (4-6 phrases) et une description détaillée de l\'image.';
+      structureInstruction = 'Crée 10-12 pages. Chaque page doit avoir un court paragraphe de 8 ou 9 phrases et une description détaillée de l\'image.';
     }
 
     return `
-      Écris une courte histoire pour un enfant de ${age} ans sur le sujet : "${topic}".
+      Écris une courte histoire pour un enfant de ${age} ans sur le sujet : "${topic}". L'histoire doit contenir des éléments surprenants et amusants. Le personnage principale doit apprendre quelque chose à la fin de l'histoire.
       ${namePart ? `Le personnage principal doit s'appeler ${childName}.` : ''}
       
       Guide de style : ${styleInstruction}
