@@ -7,6 +7,8 @@ export class PromptBuilder {
     return `
 ${this.getContextSection(age, topic, childName, protagonistName)}
 
+${this.getNarrativeSection()}
+
 ${this.getStyleSection(age)}
 
 ${this.getStructureSection(age)}
@@ -22,6 +24,15 @@ ${this.getFormattingInstructions(age)}
 L'histoire doit contenir des éléments surprenants et amusants. 
 Le personnage principal doit apprendre quelque chose à la fin de l'histoire.
 ${protagonistName ? `Le personnage principal doit s'appeler ${protagonistName}.` : ''}`;
+  }
+
+  private static getNarrativeSection(): string {
+    return `STRUCTURE NARRATIVE :
+L'histoire doit impérativement suivre une trame narrative classique et engageante :
+1. Situation initiale : Présentation du personnage et de son environnement.
+2. Élément perturbateur : Un problème ou un événement inattendu survient.
+3. Péripéties : Le personnage cherche une solution.
+4. Résolution heureuse : Le problème est résolu et le personnage a appris quelque chose.`;
   }
 
   private static getStyleSection(age: number): string {
