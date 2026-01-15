@@ -2,14 +2,14 @@ import { StoryRequest } from '../models/Story';
 
 export class PromptBuilder {
   static build(request: StoryRequest): string {
-    const { topic, age, childName } = request;
-    const namePart = childName ? `The main character should be named ${childName}.` : '';
+    const { topic, age, protagonistName, childName } = request;
+    const namePart = protagonistName ? `The main character should be named ${protagonistName}.` : '';
     
     let styleInstruction = '';
     let structureInstruction = '';
 
     if (age <= 3) {
-      styleInstruction = 'Utilise des mots très simples et des phrases courtes. Un langage répétitif et rythmé est bon.';
+      styleInstruction = 'Utilise des mots très simples et des phrases courtes.';
       structureInstruction = 'Crée 5-7 pages. Chaque page doit avoir exactement 3 ou 4 courtes phrases et une description détaillée de l\'image.';
     } else if (age <= 6) {
       styleInstruction = 'Utilise un vocabulaire simple mais des phrases complètes. Ton engageant et amusant.';
@@ -20,8 +20,8 @@ export class PromptBuilder {
     }
 
     return `
-      Écris une courte histoire pour un enfant de ${age} ans sur le sujet : "${topic}". L'histoire doit contenir des éléments surprenants et amusants. Le personnage principale doit apprendre quelque chose à la fin de l'histoire.
-      ${namePart ? `Le personnage principal doit s'appeler ${childName}.` : ''}
+      Écris une courte histoire pour un enfant de ${age} ans ${childName ? `prénommé ${childName} ` : ''}sur le sujet : "${topic}". L'histoire doit contenir des éléments surprenants et amusants. Le personnage principale doit apprendre quelque chose à la fin de l'histoire.
+      ${namePart ? `Le personnage principal doit s'appeler ${protagonistName}.` : ''}
       
       Guide de style : ${styleInstruction}
       Guide de structure : ${structureInstruction}

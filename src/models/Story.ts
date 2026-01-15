@@ -14,5 +14,6 @@ export interface Story {
 export interface StoryRequest {
   topic: string;
   age: number;
+  protagonistName?: string;
   childName?: string;
 }

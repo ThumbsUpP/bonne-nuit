@@ -11,7 +11,8 @@ async function generateBook() {
   const request: StoryRequest = {
     topic: 'A bunny who wants to travel the world',
     age: 1.5,
-    childName: 'Lapinou'
+    protagonistName: 'Lapinou',
+    childName: 'Léa'
   };
 
   console.log('📖 Generating story text...');

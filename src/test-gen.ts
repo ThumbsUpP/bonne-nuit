@@ -9,7 +9,8 @@ async function testGeneration() {
   const request: StoryRequest = {
     topic: 'A brave bunny who goes to the moon',
     age: 4,
-    childName: 'Barnaby'
+    protagonistName: 'Barnaby',
+    childName: 'Alice'
   };
 
   console.log('Generating story...');

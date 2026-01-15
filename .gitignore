@@ -5,3 +5,4 @@ dist
 test_story.json
 test_image.png
 serviceAccountKey.json
+generated_book/

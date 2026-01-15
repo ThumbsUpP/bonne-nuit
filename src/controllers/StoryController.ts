@@ -7,7 +7,7 @@ const geminiService = new GeminiService();
 export class StoryController {
   static async generate(req: Request, reqRes: Response): Promise<void> {
     try {
-      const { topic, age, childName } = req.body;
+      const { topic, age, protagonistName, childName } = req.body;
 
       if (!topic || !age) {
         reqRes.status(400).json({ error: 'Topic and age are required' });
@@ -17,6 +17,7 @@ export class StoryController {
       const storyRequest: StoryRequest = {
         topic,
         age: parseInt(age as string, 10),
+        protagonistName,
         childName,
       };
 

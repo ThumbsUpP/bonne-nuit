@@ -5,7 +5,7 @@ dotenv.config();
 export class ImagenService {
   private apiKey: string;
   private baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
-  private modelName = 'models/gemini-2.5-flash-image'; // The "Nano Banana" model
+  private modelName = 'models/gemini-3-pro-image-preview'; // Nano Banana Pro
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
