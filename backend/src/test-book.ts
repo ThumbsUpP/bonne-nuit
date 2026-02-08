@@ -9,10 +9,10 @@ async function generateBook() {
   const imagen = new ImagenService();
 
   const request: StoryRequest = {
-    topic: 'A bunny who wants to travel the world',
+    topic: 'Une aventure de pirate',
     age: 1.5,
-    protagonistName: 'Lapinou',
-    childName: 'Léa'
+    protagonistName: 'Barbe Bleu',
+    childName: 'Colombe'
   };
 
   console.log('📖 Generating story text...');
@@ -31,13 +31,13 @@ async function generateBook() {
     fs.writeFileSync(path.join(outputDir, 'story.json'), JSON.stringify(story, null, 2));
 
     console.log(`🎨 Generating images for ${story.pages.length} pages...`);
-    
+
     let firstImageBuffer: Buffer | null = null;
 
     for (let i = 0; i < story.pages.length; i++) {
       const page = story.pages[i];
       console.log(`   [Page ${i + 1}/${story.pages.length}] Generating image...`);
-      
+
       // Construct the full prompt for consistency
       const fullPrompt = `
         Style: ${story.artStyle}.
@@ -50,7 +50,7 @@ async function generateBook() {
       try {
         // Pass firstImageBuffer if it exists (for pages 2+)
         const imageBuffer = await imagen.generateImage(fullPrompt, firstImageBuffer || undefined);
-        
+
         // Store the first image to use as reference
         if (i === 0) {
           firstImageBuffer = imageBuffer;
