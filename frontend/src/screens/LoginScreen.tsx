@@ -23,7 +23,7 @@ const LoginScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
   const handleAuth = async () => {
     if (!email || !password) {
@@ -48,15 +48,27 @@ const LoginScreen = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await signInWithGoogle();
+    } catch (err: any) {
+      setError(err.message || 'Google Sign-In failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <View style={[styles.card, isTablet ? styles.tabletCard : null]}>
+      <View style={styles.card}>
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            {/* Icon removed for debugging */}
+            {/* Icons removed to debug boolean vs string error */}
           </View>
           <Text style={styles.title}>
             {isRegistering ? 'Create Account' : 'Welcome Back'}
@@ -100,17 +112,31 @@ const LoginScreen = () => {
           </View>
 
           <TouchableOpacity 
-            style={[styles.button, loading ? styles.buttonDisabled : null]} 
+            style={styles.button} 
             onPress={handleAuth}
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator size={24} color="#fff" />
             ) : (
               <Text style={styles.buttonText}>
                 {isRegistering ? 'Sign Up' : 'Log In'}
               </Text>
             )}
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity 
+            style={styles.googleButton} 
+            onPress={handleGoogleSignIn}
+            disabled={loading}
+          >
+            <Text style={styles.googleButtonText}>Continue with Google</Text>
           </TouchableOpacity>
         </View>
 
@@ -233,6 +259,40 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: '600',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#e2e8f0',
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: '#94a3b8',
+    fontSize: 14,
+  },
+  googleButton: {
+    backgroundColor: '#fff',
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  googleButtonText: {
+    color: '#1e293b',
+    fontSize: 16,
     fontWeight: '600',
   },
   buttonIcon: {
