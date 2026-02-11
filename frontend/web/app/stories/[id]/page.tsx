@@ -1,0 +1,209 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, BookOpen, Calendar, User } from 'lucide-react';
+
+interface Page {
+  textContent: string;
+  imageDescription: string;
+}
+
+interface Story {
+  id: string;
+  title: string;
+  ageGroup: string;
+  characterDescription: string;
+  artStyle: string;
+  topic: string;
+  protagonistName: string;
+  createdAt: string;
+  pages: Page[];
+}
+
+export default function StoryDetail() {
+  const params = useParams();
+  const [story, setStory] = useState<Story | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    fetchStory();
+  }, [params.id]);
+
+  const fetchStory = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setError('Please sign in to view this story');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/stories/${params.id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch story');
+      }
+
+      const data = await response.json();
+      setStory(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading your story...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !story) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
+        <div className="max-w-2xl mx-auto">
+          <Link
+            href="/stories"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to stories
+          </Link>
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <p className="text-red-600">{error || 'Story not found'}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+      <div className="max-w-4xl mx-auto p-4">
+        <Link
+          href="/stories"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to stories
+        </Link>
+
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8">
+            <h1 className="text-3xl font-bold mb-4">{story.title}</h1>
+            <div className="flex flex-wrap gap-4 text-sm opacity-90">
+              <span className="flex items-center gap-1">
+                <BookOpen className="w-4 h-4" />
+                {story.pages?.length || 0} pages
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                {formatDate(story.createdAt)}
+              </span>
+              <span className="flex items-center gap-1">
+                <User className="w-4 h-4" />
+                {story.ageGroup}
+              </span>
+            </div>
+          </div>
+
+          {/* Story Content */}
+          <div className="p-8">
+            {/* Page Navigation */}
+            {story.pages && story.pages.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-700">
+                    Page {currentPage + 1} of {story.pages.length}
+                  </h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+                      disabled={currentPage === 0}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => setCurrentPage(Math.min(story.pages.length - 1, currentPage + 1))}
+                      disabled={currentPage === story.pages.length - 1}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+
+                {/* Page Content */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <p className="text-lg text-gray-800 leading-relaxed">
+                    {story.pages[currentPage].textContent}
+                  </p>
+                </div>
+
+                {/* Image Description */}
+                <div className="mt-4 p-4 bg-indigo-50 rounded-xl">
+                  <p className="text-sm text-indigo-800">
+                    <span className="font-semibold">Illustration:</span>{' '}
+                    {story.pages[currentPage].imageDescription}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Story Details */}
+            <div className="border-t pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Story Details</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-sm text-gray-500 mb-1">Topic</p>
+                  <p className="font-medium text-gray-900">{story.topic}</p>
+                </div>
+                {story.protagonistName && (
+                  <div className="p-4 bg-gray-50 rounded-xl">
+                    <p className="text-sm text-gray-500 mb-1">Main Character</p>
+                    <p className="font-medium text-gray-900">{story.protagonistName}</p>
+                  </div>
+                )}
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-sm text-gray-500 mb-1">Art Style</p>
+                  <p className="font-medium text-gray-900">{story.artStyle}</p>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-sm text-gray-500 mb-1">Character Description</p>
+                  <p className="font-medium text-gray-900 text-sm">{story.characterDescription}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
