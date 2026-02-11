@@ -1,55 +1,62 @@
-"use client";
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  User,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, name: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  logOut: () => Promise<void>;
+  logOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const MOCK_USER: User = {
+  id: 'local-user',
+  email: 'pierre@local.dev',
+  name: 'Pierre'
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return unsubscribe;
+    // Check local storage for auth
+    const stored = localStorage.getItem('bonne-nuit-user');
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+    setLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    // Mock auth - accept any credentials for testing
+    const user = { ...MOCK_USER, email };
+    localStorage.setItem('bonne-nuit-user', JSON.stringify(user));
+    setUser(user);
   };
 
-  const signUp = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string, name: string) => {
+    const user = { id: 'local-user', email, name };
+    localStorage.setItem('bonne-nuit-user', JSON.stringify(user));
+    setUser(user);
   };
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    localStorage.setItem('bonne-nuit-user', JSON.stringify(MOCK_USER));
+    setUser(MOCK_USER);
   };
 
-  const logOut = async () => {
-    await signOut(auth);
+  const logOut = () => {
+    localStorage.removeItem('bonne-nuit-user');
+    setUser(null);
   };
 
   return (
