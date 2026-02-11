@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:prompt": "ts-node src/scripts/test-book.ts",
+    "test:prompt": "ts-node src/test-book.ts",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "firebase-admin": "^13.6.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

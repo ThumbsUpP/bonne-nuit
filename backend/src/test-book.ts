@@ -1,24 +1,30 @@
 import { GeminiService } from './services/GeminiService';
 import { ImagenService } from './services/ImagenService';
 import { StoryRequest, Story } from './models/Story';
+import { LocalDbService } from './services/LocalDbService';
 import fs from 'fs';
 import path from 'path';
 
 async function generateBook() {
   const gemini = new GeminiService();
   const imagen = new ImagenService();
+  const localDb = new LocalDbService();
 
   const request: StoryRequest = {
-    topic: 'Une aventure de pirate',
+    topic: 'Une aventure lama',
     age: 1.5,
-    protagonistName: 'Barbe Bleu',
+    protagonistName: 'Kuzco',
     childName: 'Colombe'
   };
 
   console.log('📖 Generating story text...');
   try {
     const story = await gemini.generateStory(request);
-    console.log(`✅ Story generated: "${story.title}"`);
+    await localDb.addStory('test-user', {
+      ...story,
+      ...request
+    });
+    console.log(`✅ Story generated and saved to local DB: "${story.title}"`);
     console.log(`   Character: ${story.characterDescription}`);
     console.log(`   Style: ${story.artStyle}`);
 

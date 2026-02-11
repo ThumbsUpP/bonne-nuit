@@ -1,10 +1,11 @@
 import { Response } from 'express';
 import { GeminiService } from '../services/GeminiService';
 import { StoryRequest } from '../models/Story';
-import { db } from '../config/firebase';
+import { LocalDbService } from '../services/LocalDbService';
 import { AuthRequest } from '../middleware/auth';
 
 const geminiService = new GeminiService();
+const localDbService = new LocalDbService();
 
 export class StoryController {
   static async generate(req: AuthRequest, res: Response): Promise<void> {
@@ -31,20 +32,15 @@ export class StoryController {
 
       const story = await geminiService.generateStory(storyRequest);
 
-      // Save to Firestore
-      if (db) {
-        const docRef = await db.collection('stories').add({
-          ...story,
-          userId,
-          createdAt: new Date().toISOString(),
-          topic,
-          age,
-          protagonistName: protagonistName || childName
-        });
-        res.json({ id: docRef.id, ...story });
-      } else {
-        res.json(story);
-      }
+      // Save to local DB
+      const storedStory = await localDbService.addStory(userId, {
+        ...story,
+        topic,
+        age,
+        protagonistName: protagonistName || childName
+      });
+
+      res.json(storedStory);
     } catch (error) {
       console.error('Error in controller:', error);
       res.status(500).json({ error: 'Failed to generate story' });
@@ -59,21 +55,7 @@ export class StoryController {
         return;
       }
 
-      if (!db) {
-        res.status(500).json({ error: 'Database not initialized' });
-        return;
-      }
-
-      const snapshot = await db.collection('stories')
-        .where('userId', '==', userId)
-        .orderBy('createdAt', 'desc')
-        .get();
-
-      const stories = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
+      const stories = await localDbService.getAllStories(userId);
       res.json(stories);
     } catch (error) {
       console.error('Error listing stories:', error);
@@ -91,25 +73,14 @@ export class StoryController {
         return;
       }
 
-      if (!db) {
-        res.status(500).json({ error: 'Database not initialized' });
-        return;
-      }
+      const story = await localDbService.getStoryById(id as string, userId);
 
-      const doc = await db.collection('stories').doc(id).get();
-
-      if (!doc.exists) {
+      if (!story) {
         res.status(404).json({ error: 'Story not found' });
         return;
       }
 
-      const data = doc.data();
-      if (data?.userId !== userId) {
-        res.status(403).json({ error: 'Unauthorized to access this story' });
-        return;
-      }
-
-      res.json({ id: doc.id, ...data });
+      res.json(story);
     } catch (error) {
       console.error('Error getting story:', error);
       res.status(500).json({ error: 'Failed to get story' });

@@ -1,0 +1,90 @@
+[
+  {
+    "title": "Test Story",
+    "topic": "Testing local DB",
+    "age": 5,
+    "pages": [
+      {
+        "textContent": "Once upon a time...",
+        "imageDescription": "A quiet forest"
+      }
+    ],
+    "id": "bed9392d-d863-4615-912f-6133344d41ea",
+    "userId": "test-user",
+    "createdAt": "2026-02-08T21:04:20.114Z"
+  },
+  {
+    "title": "Le Trésor de Barbe Bleu",
+    "ageGroup": "1.5 ans",
+    "characterDescription": "A small, chubby, and friendly pirate named Barbe Bleu. He has a very fluffy, bright blue curly beard. He wears a red bandana with white polka dots, a yellow and white striped t-shirt, and small brown boots. He has a big, kind smile.",
+    "artStyle": "Vibrant and soft children's book illustration style, bold outlines, warm colors, playful and engaging for toddlers, high-quality digital art.",
+    "pages": [
+      {
+        "textContent": "Voici le pirate Barbe Bleu. Il a une belle barbe bleue. Il vit sur un grand bateau.",
+        "imageDescription": "A sunny day on a colorful pirate ship. Barbe Bleu stands on the wooden deck, smiling at the reader. The ocean is bright blue with tiny jumping fish. Full scene, no white background. Text to render: 'Voici le pirate Barbe Bleu. Il a une belle barbe bleue. Il vit sur un grand bateau.'"
+      },
+      {
+        "textContent": "Barbe Bleu cherche son trésor. Il regarde sous les voiles. Mais le trésor a disparu !",
+        "imageDescription": "Barbe Bleu is looking behind large, colorful striped sails on the ship. He looks curious and playful, not sad. The sky is orange and pink. Full scene, no white background. Text to render: 'Barbe Bleu cherche son trésor. Il regarde sous les voiles. Mais le trésor a disparu !'"
+      },
+      {
+        "textContent": "Il trouve une chaussette géante. C'est vraiment très rigolo. Un petit canard est caché dedans !",
+        "imageDescription": "Barbe Bleu is holding a huge, colorful striped sock. A bright yellow rubber duck is popping out of the sock. Barbe Bleu is laughing. Full scene, no white background. Text to render: 'Il trouve une chaussette géante. C'est vraiment très rigolo. Un petit canard est caché dedans !'"
+      },
+      {
+        "textContent": "Il soulève un énorme chapeau. Un petit chat fait dodo dessous. Le chat fait un gros bisou.",
+        "imageDescription": "A giant black pirate hat is on the floor. Barbe Bleu lifts it to reveal a tiny, fluffy grey kitten waking up. The kitten is nuzzling Barbe Bleu's blue beard. Full scene, no white background. Text to render: 'Il soulève un énorme chapeau. Un petit chat fait dodo dessous. Le chat fait un gros bisou.'"
+      },
+      {
+        "textContent": "Enfin, Barbe Bleu voit un coffre. Il ouvre la boîte en bois. Elle est remplie de biscuits !",
+        "imageDescription": "Barbe Bleu finds a small wooden chest decorated with stars. He opens it, and gold-colored star-shaped cookies are glowing inside. He looks very happy. Full scene, no white background. Text to render: 'Enfin, Barbe Bleu voit un coffre. Il ouvre la boîte en bois. Elle est remplie de biscuits !'"
+      },
+      {
+        "textContent": "Barbe Bleu partage avec ses amis. Tout le monde mange ensemble. Partager, c'est le vrai trésor.",
+        "imageDescription": "Barbe Bleu, the kitten, and the rubber duck are sitting in a circle on the deck eating cookies. The sun is setting beautifully in the background. Full scene, no white background. Text to render: 'Barbe Bleu partage avec ses amis. Tout le monde mange ensemble. Partager, c'est le vrai trésor.'"
+      }
+    ],
+    "topic": "Une aventure de pirate",
+    "age": 1.5,
+    "protagonistName": "Barbe Bleu",
+    "childName": "Colombe",
+    "id": "4dee9637-053c-454f-bb52-ad5aa6c12c17",
+    "userId": "test-user",
+    "createdAt": "2026-02-08T21:17:34.190Z"
+  },
+  {
+    "title": "L'aventure de Kuzco le Lama",
+    "ageGroup": "1.5 ans",
+    "characterDescription": "Kuzco is a small, fluffy white llama with big friendly eyes and a happy smile. He wears a colorful necklace of bright red, yellow, and blue wool pom-poms around his neck.",
+    "artStyle": "Vibrant and whimsical paper-cut collage style with textured layers and bright, saturated colors.",
+    "pages": [
+      {
+        "textContent": "Voici Kuzco, un petit lama tout blanc. Il habite dans une montagne très colorée. Kuzco adore sauter sur les rochers verts.",
+        "imageDescription": "Kuzco the llama standing in a vibrant mountain landscape with purple peaks and bright green grass. Full scene, no white background. Text to render: [Voici Kuzco, un petit lama tout blanc. Il habite dans une montagne très colorée. Kuzco adore sauter sur les rochers verts.]"
+      },
+      {
+        "textContent": "Oh, regarde cette bulle géante ! Elle est toute violette et brille très fort. Kuzco veut l'attraper avec son petit nez.",
+        "imageDescription": "A large, shimmering purple bubble floats in front of Kuzco's nose. The background is a bright turquoise sky. Full scene, no white background. Text to render: [Oh, regarde cette bulle géante ! Elle est toute violette et brille très fort. Kuzco veut l'attraper avec son petit nez.]"
+      },
+      {
+        "textContent": "Kuzco court très vite derrière la bulle. Il saute par-dessus un drôle de cactus bleu. La bulle se pose doucement sur sa tête !",
+        "imageDescription": "Kuzco running and jumping over a whimsical blue cactus with orange flowers. The purple bubble is now resting on his head. Full scene, no white background. Text to render: [Kuzco court très vite derrière la bulle. Il saute par-dessus un drôle de cactus bleu. La bulle se pose doucement sur sa tête !]"
+      },
+      {
+        "textContent": "C'est magique, Kuzco s'envole dans le ciel ! Il traverse des nuages roses qui sentent la fraise. Il remue ses oreilles pour dire bonjour.",
+        "imageDescription": "Kuzco floating high in the sky among fluffy pink clouds. He looks happy and surprised. Full scene, no white background. Text to render: [C'est magique, Kuzco s'envole dans le ciel ! Il traverse des nuages roses qui sentent la fraise. Il remue ses oreilles pour dire bonjour.]"
+      },
+      {
+        "textContent": "La bulle fait 'Plop' et Kuzco redescend. Il tombe sur un gros tas de laine douce. Kuzco a appris que découvrir des choses est amusant !",
+        "imageDescription": "Kuzco landing safely on a big, soft pile of rainbow-colored wool. He is smiling. Full scene, no white background. Text to render: [La bulle fait 'Plop' et Kuzco redescend. Il tombe sur un gros tas de laine douce. Kuzco a appris que découvrir des choses est amusant !]"
+      }
+    ],
+    "topic": "Une aventure lama",
+    "age": 1.5,
+    "protagonistName": "Kuzco",
+    "childName": "Colombe",
+    "id": "d2b9369d-ac16-4c67-805a-d55b81506cbc",
+    "userId": "test-user",
+    "createdAt": "2026-02-08T21:22:11.389Z"
+  }
+]

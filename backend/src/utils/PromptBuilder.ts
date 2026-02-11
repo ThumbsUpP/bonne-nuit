@@ -3,7 +3,7 @@ import { StoryRequest } from '../models/Story';
 export class PromptBuilder {
   static build(request: StoryRequest): string {
     const { topic, age, protagonistName, childName } = request;
-    
+
     return `
 ${this.getContextSection(age, topic, childName, protagonistName)}
 
@@ -37,9 +37,7 @@ L'histoire doit impérativement suivre une trame narrative classique et engagean
 
   private static getStyleSection(age: number): string {
     let instruction = '';
-    if (age <= 3) {
-      instruction = 'Utilise des mots très simples et des phrases courtes.';
-    } else if (age <= 6) {
+    if (age <= 6) {
       instruction = 'Utilise un vocabulaire simple mais des phrases complètes. Ton engageant et amusant.';
     } else {
       instruction = 'Utilise un vocabulaire et des structures de phrases plus complexes. Un ton aventureux ou mystérieux est approprié.';
