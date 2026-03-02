@@ -1,90 +1,35 @@
-# Welcome to your Convex functions directory!
+# Bonne Nuit - AI Generation Backend
 
-Write your Convex functions here.
-See https://docs.convex.dev/functions for more.
+This is the Convex backend for Bonne Nuit. It handles the core AI generation pipelines using Google Gemini models.
 
-A query function that takes two arguments looks like:
+This document details the specific internal flow of how stories and images are created.
 
-```ts
-// convex/myFunctions.ts
-import { query } from "./_generated/server";
-import { v } from "convex/values";
+## 1. Story Generation Flow (`convex/gemini.ts`)
 
-export const myQueryFunction = query({
-  // Validators for arguments.
-  args: {
-    first: v.number(),
-    second: v.string(),
-  },
+The primary entry point to create a story is the Action `api.gemini.generateStory`.
 
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
-    const documents = await ctx.db.query("tablename").collect();
+### What it does:
+1. **Prompt Building**: Takes user arguments (`topic`, `age`, `protagonistName`) and uses the internal `PromptBuilder.ts` to construct a highly specific JSON prompt. Note that `PromptBuilder.ts` determines the length of the story based on the child's age.
+2. **LLM Generation**: Calls the Gemini Text API (`gemini-3-flash-preview`) with instructions to return a valid JSON object holding the story metadata, characters, art styles, and a list of `pages`.
+3. **Database Storage**: The Action then parses the JSON and immediately saves the result to the Convex Database by calling the internal `api.gemini.saveStory` Mutation.
+4. **Return**: Returns the `storyId` so the client can begin fetching it.
 
-    // Arguments passed from the client are properties of the args object.
-    console.log(args.first, args.second);
+## 2. Image Generation Flow (`convex/imagen.ts`)
 
-    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
-    // remove non-public properties, or create new objects.
-    return documents;
-  },
-});
-```
+Once a story exists in the database, the client requests image generation for each individual page using the Action `api.imagen.generateImage`.
 
-Using this query function in a React component looks like:
+### What it does:
+1. **Prompting**: It constructs an image prompt by combining:
+   - The overall story's `artStyle`.
+   - The story's `characterDescription`.
+   - The specific page's `imageDescription`.
+2. **Image Generation**: Calls the Gemini Image API (`gemini-3-pro-image-preview`) with this combined prompt.
+3. **Storage Upload**: The Gemini API returns raw base64 data. The Action decodes this into a Blob and uploads it directly to Convex File Storage.
+4. **Linking**: The Action calls the internal `api.stories.updatePageImage` Mutation. This saves the Convex `storageId` into the `imageId` field of that specific story page.
 
-```ts
-const data = useQuery(api.myFunctions.myQueryFunction, {
-  first: 10,
-  second: "hello",
-});
-```
+## Data Fetching
 
-A mutation function looks like:
-
-```ts
-// convex/myFunctions.ts
-import { mutation } from "./_generated/server";
-import { v } from "convex/values";
-
-export const myMutationFunction = mutation({
-  // Validators for arguments.
-  args: {
-    first: v.string(),
-    second: v.string(),
-  },
-
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Insert or modify documents in the database here.
-    // Mutations can also read from the database like queries.
-    // See https://docs.convex.dev/database/writing-data.
-    const message = { body: args.first, author: args.second };
-    const id = await ctx.db.insert("messages", message);
-
-    // Optionally, return a value from your mutation.
-    return await ctx.db.get("messages", id);
-  },
-});
-```
-
-Using this mutation function in a React component looks like:
-
-```ts
-const mutation = useMutation(api.myFunctions.myMutationFunction);
-function handleButtonPress() {
-  // fire and forget, the most common way to use mutations
-  mutation({ first: "Hello!", second: "me" });
-  // OR
-  // use the result once the mutation has completed
-  mutation({ first: "Hello!", second: "me" }).then((result) =>
-    console.log(result),
-  );
-}
-```
-
-Use the Convex CLI to push your functions to a deployment. See everything
-the Convex CLI can do by running `npx convex -h` in your project root
-directory. To learn more, launch the docs with `npx convex docs`.
+When the frontend fetches a story using the query `api.stories.get` or `api.stories.list`:
+- It retrieves the raw story data.
+- It iterates over all pages.
+- If a page has an `imageId` stored, it dynamically resolves it into a public `imageUrl` via `ctx.storage.getUrl(imageId)` before sending the data to the client. This allows the client to immediately display the images without making separate storage requests.
