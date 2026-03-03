@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, FlatList, useWindowDimensions } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
 import { useQuery } from "convex/react";
 import { ChevronLeft } from 'lucide-react-native';
 import { Story, StoryPage } from '../types/Story';
 
 const StoryDetailScreen = ({ route, navigation }: any) => {
+    const { width, height } = useWindowDimensions();
     const { storyId } = route.params;
 
     // Fetch specific story details
@@ -49,10 +49,11 @@ const StoryDetailScreen = ({ route, navigation }: any) => {
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
+                style={{ flex: 1 }}
                 renderItem={({ item }: { item: StoryPage }) => {
                     const imageUrl = item.imageUrl || null;
                     return (
-                        <View style={styles.pageContainer}>
+                        <View style={[styles.pageContainer, { width, height: height - 100 }]}>
                             {imageUrl ? (
                                 <Image source={{ uri: imageUrl }} style={styles.pageImage} resizeMode="contain" accessibilityLabel={item.textContent} />
                             ) : (
@@ -65,7 +66,7 @@ const StoryDetailScreen = ({ route, navigation }: any) => {
                     );
                 }}
                 ListFooterComponent={() => (
-                    <View style={[styles.pageContainer, styles.center]}>
+                    <View style={[styles.pageContainer, styles.center, { width, height: height - 100 }]}>
                         <Text style={styles.endText}>The End</Text>
                     </View>
                 )}
@@ -106,15 +107,15 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
     },
     pageContainer: {
-        width,
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#000',
     },
     pageImage: {
-        width: '100%',
-        height: '100%',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
     },
     placeholderImage: {
         backgroundColor: '#f1f5f9',
