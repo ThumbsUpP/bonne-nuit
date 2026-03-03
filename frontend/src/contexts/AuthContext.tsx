@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
   User,
   GoogleAuthProvider,
   signInWithCredential
@@ -46,14 +46,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   */
 
   useEffect(() => {
-    console.log('AuthProvider: Initializing Auth listener');
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log('AuthProvider: Auth state changed', user ? user.email : 'null');
-      setUser(user);
-      setLoading(false);
-    });
+    console.log('AuthProvider: Bypassing Firebase Auth for now');
 
-    return unsubscribe;
+    // Set a dummy user to bypass login
+    const dummyUser = {
+      uid: 'test-user-id',
+      email: 'test@bonnenuit.app',
+      displayName: 'Test User'
+    } as User;
+
+    setUser(dummyUser);
+    setLoading(false);
+
+    // We do not subscribe to onAuthStateChanged to completely bypass Firebase
+    return () => { };
   }, []);
 
   const signIn = async (email: string, pass: string) => {
