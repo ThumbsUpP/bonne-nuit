@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, FlatList, useWindowDimensions } from 'react-native';
 
 import { useQuery } from "convex/react";
@@ -8,6 +8,9 @@ import { Story, StoryPage } from '../types/Story';
 const StoryDetailScreen = ({ route, navigation }: any) => {
     const { width, height } = useWindowDimensions();
     const { storyId } = route.params;
+
+    const flatListRef = useRef<FlatList>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     // Fetch specific story details
     const story = useQuery("stories:get" as any, { id: storyId }) as Story | undefined;
@@ -33,6 +36,27 @@ const StoryDetailScreen = ({ route, navigation }: any) => {
         );
     }
 
+    const totalPages = story.pages.length;
+
+    const handleNext = () => {
+        if (currentIndex < totalPages) {
+            flatListRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true });
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            flatListRef.current?.scrollToIndex({ index: currentIndex - 1, animated: true });
+            setCurrentIndex(currentIndex - 1);
+        }
+    };
+
+    const handleMomentumScrollEnd = (event: any) => {
+        const newIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+        setCurrentIndex(newIndex);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -44,13 +68,15 @@ const StoryDetailScreen = ({ route, navigation }: any) => {
             </View>
 
             <FlatList
+                ref={flatListRef}
                 data={story.pages}
                 keyExtractor={(_, index) => index.toString()}
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
                 style={{ flex: 1 }}
-                renderItem={({ item }: { item: StoryPage }) => {
+                onMomentumScrollEnd={handleMomentumScrollEnd}
+                renderItem={({ item, index }: { item: StoryPage, index: number }) => {
                     const imageUrl = item.imageUrl || null;
                     return (
                         <View style={[styles.pageContainer, { width, height: height - 100 }]}>
@@ -62,12 +88,29 @@ const StoryDetailScreen = ({ route, navigation }: any) => {
                                     <Text style={styles.generatingText}>Generating page...</Text>
                                 </View>
                             )}
+
+                            {/* Pagination Overlays */}
+                            <TouchableOpacity
+                                style={styles.leftOverlay}
+                                onPress={handlePrev}
+                                activeOpacity={1}
+                            />
+                            <TouchableOpacity
+                                style={styles.rightOverlay}
+                                onPress={handleNext}
+                                activeOpacity={1}
+                            />
                         </View>
                     );
                 }}
                 ListFooterComponent={() => (
                     <View style={[styles.pageContainer, styles.center, { width, height: height - 100 }]}>
                         <Text style={styles.endText}>The End</Text>
+                        <TouchableOpacity
+                            style={styles.leftOverlay}
+                            onPress={handlePrev}
+                            activeOpacity={1}
+                        />
                     </View>
                 )}
             />
@@ -148,6 +191,22 @@ const styles = StyleSheet.create({
     backButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+    },
+    leftOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: '50%',
+        zIndex: 10,
+    },
+    rightOverlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        width: '50%',
+        zIndex: 10,
     }
 });
 
