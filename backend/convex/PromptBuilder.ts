@@ -45,12 +45,12 @@ ${protagonistName ? `Le personnage principal doit s'appeler ${protagonistName}.`
     }
 
     private static getNarrativeSection(): string {
-        return `STRUCTURE NARRATIVE :
-L'histoire doit impérativement suivre une trame narrative classique et engageante :
+        return `STRUCTURE NARRATIVE (À RÉFLÉCHIR DANS LE SYNOPSIS) :
+L'histoire doit impérativement suivre une trame narrative classique, cohérente et engageante, sans conclusion abrupte :
 1. Situation initiale : Présentation du personnage et de son environnement.
 2. Élément perturbateur : Un problème ou un événement inattendu survient.
-3. Péripéties : Le personnage cherche une solution.
-4. Résolution heureuse : Le problème est résolu et le personnage a appris quelque chose.`;
+3. Péripéties : Le personnage cherche une solution de manière logique.
+4. Résolution heureuse : Le problème est résolu de manière satisfaisante et le personnage a appris quelque chose.`;
     }
 
     private static getStyleSection(age: number): string {
@@ -84,20 +84,11 @@ L'histoire doit impérativement suivre une trame narrative classique et engagean
     }
 
     private static getFormattingInstructions(age: number): string {
-        return `Retourne le résultat strictement sous forme d'objet JSON avec le format suivant :
-{
-  "title": "Titre de l'histoire",
-  "ageGroup": "${age} ans",
-  "characterDescription": "Description visuelle complète du personnage (en anglais)",
-  "artStyle": "Description du style artistique (en anglais)",
-  "pages": [
-    {
-      "textContent": "Texte de la page 1...",
-      "imageDescription": "Description de l'image (en anglais). Inclure : 'Clear composition, balanced background, not too cluttered. Text to render: [Texte de la page 1]'"
-    }
-  ]
-}
-N'inclus aucun formatage markdown (comme \`\`\`json), juste la chaîne JSON brute.
-IMPORTANT: Le 'textContent' et le 'title' doivent être en FRANÇAIS. Les champs 'characterDescription', 'artStyle' et 'imageDescription' doivent être en ANGLAIS.`;
+        return `RÈGLES IMPORTANTES :
+1. Crée un "synopsisAndPlanning" en premier pour réfléchir au scénario global avant d'écrire les pages.
+2. L'histoire doit être bien rythmée, ne termine pas brusquement.
+3. Le 'textContent' et le 'title' doivent impérativement être en FRANÇAIS. 
+4. Les champs 'characterDescription', 'artStyle' et 'imageDescription' doivent être descriptifs et en ANGLAIS.
+5. Pour 'imageDescription', inclus TOUJOURS : 'Clear composition, balanced background, not too cluttered. Text to render: [Texte de la page exacte en français]'`;
     }
 }
