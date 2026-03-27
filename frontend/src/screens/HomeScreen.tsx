@@ -84,7 +84,7 @@ const HomeScreen = () => {
       // 1. Generate Character Turnaround Image
       let referenceImageBase64 = null;
       try {
-        const turnaroundPrompt = `Character Turnaround: ${story.characterDescription}. Style: ${story.artStyle}. Show multiple angles of the same character on a clean white background. High quality, clear features.`;
+        const turnaroundPrompt = `Character Turnaround: ${story.characterDescription}. Style: ${story.artStyle}. Show multiple angles of the same character on a clean white background. High quality, clear features. Include the sample text "${story.title}" written in a beautiful, readable children's book font to establish a consistent typography style for the rest of the story.`;
         const turnaroundResult: any = await generateTurnaroundImageAction({ prompt: turnaroundPrompt });
         
         if (turnaroundResult && turnaroundResult.storageId) {
