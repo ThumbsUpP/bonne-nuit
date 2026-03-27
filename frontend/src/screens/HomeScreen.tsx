@@ -80,7 +80,7 @@ const HomeScreen = () => {
 
       for (let i = 0; i < story.pages.length; i++) {
         const page = story.pages[i];
-        const fullPrompt = `Style: ${story.artStyle}.\nCharacter: ${story.characterDescription}.\nScene: ${page.imageDescription}.\nEnsure the character appearance is consistent with the description.\nHigh quality, detailed, ${story.artStyle}.`.trim();
+        const fullPrompt = `Style: ${story.artStyle}.\nCharacter: ${story.characterDescription}.\nScene: ${page.imageDescription}.\nEnsure the character appearance is consistent with the description.\nMinimalist, clean, uncluttered, ${story.artStyle}.`.trim();
 
         await generateImageAction({
           storyId,
