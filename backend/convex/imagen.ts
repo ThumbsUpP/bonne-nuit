@@ -7,6 +7,7 @@ export const generateImage = action({
         storyId: v.id("stories"),
         pageIndex: v.number(),
         prompt: v.string(),
+        referenceImageBase64: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         // 1. Validate API Key
@@ -20,10 +21,20 @@ export const generateImage = action({
         const modelName = 'models/gemini-3-pro-image-preview'; // Nano Banana Pro
         const url = `${baseUrl}/${modelName}:generateContent?key=${apiKey}`;
 
+        const parts: any[] = [{ text: args.prompt }];
+        if (args.referenceImageBase64) {
+            parts.push({
+                inlineData: {
+                    mimeType: "image/png",
+                    data: args.referenceImageBase64
+                }
+            });
+        }
+
         const payload = {
             contents: [
                 {
-                    parts: [{ text: args.prompt }]
+                    parts: parts
                 }
             ]
         };
@@ -80,5 +91,71 @@ export const generateImage = action({
         });
 
         return storageId;
+    },
+});
+
+export const generateTurnaroundImage = action({
+    args: {
+        prompt: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            throw new Error("GEMINI_API_KEY is not set in environment variables.");
+        }
+
+        const baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+        const modelName = 'models/gemini-3-pro-image-preview';
+        const url = `${baseUrl}/${modelName}:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [
+                {
+                    parts: [{ text: args.prompt }]
+                }
+            ]
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Gemini API Error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const data = await response.json();
+
+        let base64Data: string | null = null;
+        if (data.candidates && data.candidates.length > 0) {
+            const parts = data.candidates[0].content.parts;
+            for (const part of parts) {
+                if (part.inlineData && part.inlineData.data) {
+                    base64Data = part.inlineData.data;
+                    break;
+                }
+            }
+        }
+
+        if (!base64Data) {
+            console.error('No inlineData found in any part. Parts:', JSON.stringify(data.candidates?.[0]?.content?.parts, null, 2));
+            throw new Error('No image data found in response');
+        }
+
+        const binaryString = atob(base64Data);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: "image/png" });
+
+        const storageId = await ctx.storage.store(blob);
+
+        return { storageId, base64Data };
     },
 });

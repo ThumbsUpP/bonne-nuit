@@ -6,7 +6,7 @@ import { LogOut, BookOpen, Library, PlusCircle, Wand2 } from 'lucide-react-nativ
 const { width } = Dimensions.get('window');
 const isTablet = width > 600;
 
-import { useQuery, useAction, useConvex } from "convex/react";
+import { useQuery, useAction, useConvex, useMutation } from "convex/react";
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
@@ -16,6 +16,8 @@ const HomeScreen = () => {
   const generateStoryAction = useAction("gemini:generateStory" as any);
   const generateImageAction = useAction("imagen:generateImage" as any);
   const suggestProposition = useAction("gemini:suggestProposition" as any);
+  const generateTurnaroundImageAction = useAction("imagen:generateTurnaroundImage" as any);
+  const updateStoryReferenceImageMutation = useMutation("stories:updateStoryReferenceImage" as any);
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [topic, setTopic] = useState("");
@@ -78,14 +80,37 @@ const HomeScreen = () => {
       const story: any = await convex.query("stories:get" as any, { id: storyId });
       if (!story || !story.pages) return;
 
+      // 1. Generate Character Turnaround Image
+      let referenceImageBase64 = null;
+      try {
+        const turnaroundPrompt = `Character Turnaround: ${story.characterDescription}. Style: ${story.artStyle}. Show multiple angles of the same character on a clean white background. High quality, clear features.`;
+        const turnaroundResult: any = await generateTurnaroundImageAction({ prompt: turnaroundPrompt });
+        
+        if (turnaroundResult && turnaroundResult.storageId) {
+          await updateStoryReferenceImageMutation({ 
+            storyId: storyId, 
+            referenceImageId: turnaroundResult.storageId 
+          });
+          referenceImageBase64 = turnaroundResult.base64Data;
+        }
+      } catch (err) {
+        console.error("Failed to generate character turnaround:", err);
+      }
+
+      // 2. Generate Page Images
       for (let i = 0; i < story.pages.length; i++) {
         const page = story.pages[i];
-        const fullPrompt = `Style: ${story.artStyle}.\nCharacter: ${story.characterDescription}.\nScene: ${page.imageDescription}.\nEnsure the character appearance is consistent with the description.\nMinimalist, clean, uncluttered, ${story.artStyle}.`.trim();
+        let fullPrompt = `Style: ${story.artStyle}.\nCharacter: ${story.characterDescription}.\nScene: ${page.imageDescription}.\nEnsure the character appearance is consistent with the description.\nClear and focused composition, visually balanced, ${story.artStyle}.`.trim();
+
+        if (referenceImageBase64) {
+          fullPrompt += `\nUse the attached character turnaround image as a strict visual reference.`;
+        }
 
         await generateImageAction({
           storyId,
           pageIndex: i,
-          prompt: fullPrompt
+          prompt: fullPrompt,
+          referenceImageBase64: referenceImageBase64 || undefined
         });
       }
     } catch (err) {

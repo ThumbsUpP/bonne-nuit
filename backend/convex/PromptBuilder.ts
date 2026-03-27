@@ -78,8 +78,8 @@ L'histoire doit impérativement suivre une trame narrative classique et engagean
     private static getImageInstructions(): string {
         return `INSTRUCTIONS POUR LES IMAGES (CRUCIAL) :
 1. D'abord, définis une description visuelle précise du personnage principal (couleur des cheveux, vêtements, accessoires).
-2. Définis un style artistique cohérent orienté vers la simplicité (ex: "illustration vectorielle minimaliste", "aquarelle épurée").
-3. IMPORTANT : Utilise des compositions très épurées et minimalistes avec beaucoup d'espace vide (negative space) et peu de détails en arrière-plan.
+2. Définis un style artistique cohérent, clair et équilibré (ex: "illustration vectorielle lumineuse", "aquarelle douce et claire").
+3. IMPORTANT : Garde un arrière-plan joliment dessiné mais qui n'est pas trop surchargé. Le personnage principal et l'action doivent rester bien en évidence.
 4. Le texte de l'histoire DOIT être intégré dans l'image dans une zone dégagée de manière lisible.`;
     }
 
@@ -93,7 +93,7 @@ L'histoire doit impérativement suivre une trame narrative classique et engagean
   "pages": [
     {
       "textContent": "Texte de la page 1...",
-      "imageDescription": "Description de l'image (en anglais). Inclure : 'Minimalist and clean composition, uncluttered background, plenty of negative space. Text to render: [Texte de la page 1]'"
+      "imageDescription": "Description de l'image (en anglais). Inclure : 'Clear composition, balanced background, not too cluttered. Text to render: [Texte de la page 1]'"
     }
   ]
 }

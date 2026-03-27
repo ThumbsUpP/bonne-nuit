@@ -82,3 +82,14 @@ export const updatePageImage = mutation({
         return true;
     },
 });
+
+export const updateStoryReferenceImage = mutation({
+    args: {
+        storyId: v.id("stories"),
+        referenceImageId: v.id("_storage"),
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.storyId, { referenceImageId: args.referenceImageId });
+        return true;
+    },
+});

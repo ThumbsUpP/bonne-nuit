@@ -8,6 +8,7 @@ export default defineSchema({
         ageGroup: v.string(),
         characterDescription: v.string(),
         artStyle: v.string(),
+        referenceImageId: v.optional(v.id("_storage")),
         pages: v.array(
             v.object({
                 textContent: v.string(),
