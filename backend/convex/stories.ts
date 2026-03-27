@@ -93,3 +93,32 @@ export const updateStoryReferenceImage = mutation({
         return true;
     },
 });
+
+export const remove = mutation({
+    args: { id: v.id("stories") },
+    handler: async (ctx, args) => {
+        const story = await ctx.db.get(args.id);
+        if (!story) return;
+
+        if (story.referenceImageId) {
+            try {
+                await ctx.storage.delete(story.referenceImageId);
+            } catch (e) {
+                console.error("Failed to delete referenceImageId:", e);
+            }
+        }
+        if (story.pages) {
+            for (const page of story.pages) {
+                if (page.imageId) {
+                    try {
+                        await ctx.storage.delete(page.imageId);
+                    } catch (e) {
+                        console.error("Failed to delete page imageId:", e);
+                    }
+                }
+            }
+        }
+
+        await ctx.db.delete(args.id);
+    },
+});

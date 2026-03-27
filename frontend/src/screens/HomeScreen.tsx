@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, TextInput, ActivityIndicator, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, TextInput, ActivityIndicator, FlatList, Image, Alert } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, BookOpen, Library, PlusCircle, Wand2 } from 'lucide-react-native';
+import { LogOut, BookOpen, Library, PlusCircle, Wand2, Trash2 } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 const isTablet = width > 600;
@@ -18,6 +18,7 @@ const HomeScreen = () => {
   const suggestProposition = useAction("gemini:suggestProposition" as any);
   const generateTurnaroundImageAction = useAction("imagen:generateTurnaroundImage" as any);
   const updateStoryReferenceImageMutation = useMutation("stories:updateStoryReferenceImage" as any);
+  const removeStoryMutation = useMutation("stories:remove" as any);
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [topic, setTopic] = useState("");
@@ -119,22 +120,37 @@ const HomeScreen = () => {
   };
 
   const renderStory = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.storyCard}
-      onPress={() => navigation.navigate('StoryDetail', { storyId: item._id })}
-    >
-      {item.pages?.[0]?.imageUrl ? (
-        <Image source={{ uri: item.pages[0].imageUrl }} style={styles.storyImage} />
-      ) : (
-        <View style={[styles.storyImage, styles.placeholderImage]}>
-          <BookOpen size={24} color="#94a3b8" />
+    <View style={styles.storyCard}>
+      <TouchableOpacity
+        style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+        onPress={() => navigation.navigate('StoryDetail', { storyId: item._id })}
+      >
+        {item.pages?.[0]?.imageUrl ? (
+          <Image source={{ uri: item.pages[0].imageUrl }} style={styles.storyImage} />
+        ) : (
+          <View style={[styles.storyImage, styles.placeholderImage]}>
+            <BookOpen size={24} color="#94a3b8" />
+          </View>
+        )}
+        <View style={styles.storyInfo}>
+          <Text style={styles.storyTitle} numberOfLines={2}>{item.title}</Text>
+          <Text style={styles.storyPages}>{item.pages.length} Pages • {item.ageGroup}</Text>
         </View>
-      )}
-      <View style={styles.storyInfo}>
-        <Text style={styles.storyTitle} numberOfLines={2}>{item.title}</Text>
-        <Text style={styles.storyPages}>{item.pages.length} Pages • {item.ageGroup}</Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={styles.deleteButton}
+        hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+        onPress={() => {
+          console.log("Delete tapped for", item._id);
+          removeStoryMutation({ id: item._id }).catch((err: any) => {
+            console.error("Delete failed:", err);
+            Alert.alert("Error", "Could not delete story. Please try again.");
+          });
+        }}
+      >
+        <Trash2 size={20} color="#ef4444" />
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -413,6 +429,11 @@ const styles = StyleSheet.create({
   storyPages: {
     fontSize: 14,
     color: '#64748b',
+  },
+  deleteButton: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContainer: {
     flex: 1,
