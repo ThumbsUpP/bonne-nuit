@@ -49,6 +49,29 @@ export const generateStory = action({
     },
 });
 
+export const suggestProposition = action({
+    args: {
+        field: v.string(),
+    },
+    handler: async (ctx, args): Promise<string> => {
+        const prompt = PromptBuilder.buildSuggestionPrompt(args.field);
+
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            throw new Error("GEMINI_API_KEY is not set in environment variables.");
+        }
+
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text().trim();
+
+        return text;
+    },
+});
+
 export const saveStory = mutation({
     args: {
         userId: v.string(),

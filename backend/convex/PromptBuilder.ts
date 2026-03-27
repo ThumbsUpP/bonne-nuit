@@ -24,6 +24,19 @@ ${this.getFormattingInstructions(age)}
     `.trim();
     }
 
+    static buildSuggestionPrompt(field: string): string {
+        switch (field) {
+            case 'topic':
+                return "Suggère un sujet court et amusant pour une histoire courte pour enfant (ex: un lapin courageux, une course d'escargots). Réponds uniquement avec le sujet, sans aucune ponctuation.";
+            case 'protagonist':
+                return "Suggère un prénom mignon et inventif pour un personnage principal d'histoire pour enfant (ex: Pompon, Zébulon). Réponds uniquement avec le prénom.";
+            case 'childName':
+                return "Suggère un prénom classique ou commun d'enfant. Réponds uniquement avec le prénom.";
+            default:
+                throw new Error(`Unsupported field for suggestion: ${field}`);
+        }
+    }
+
     private static getContextSection(age: number, topic: string, childName?: string, protagonistName?: string): string {
         return `Écris une courte histoire pour un enfant de ${age} ans ${childName ? `prénommé ${childName} ` : ''}sur le sujet : "${topic}". 
 L'histoire doit contenir des éléments surprenants et amusants. 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, TextInput, ActivityIndicator, FlatList, Image } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, BookOpen, Library, PlusCircle } from 'lucide-react-native';
+import { LogOut, BookOpen, Library, PlusCircle, Wand2 } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 const isTablet = width > 600;
@@ -15,15 +15,31 @@ const HomeScreen = () => {
   const convex = useConvex();
   const generateStoryAction = useAction("gemini:generateStory" as any);
   const generateImageAction = useAction("imagen:generateImage" as any);
+  const suggestProposition = useAction("gemini:suggestProposition" as any);
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [topic, setTopic] = useState("");
   const [protagonist, setProtagonist] = useState("");
   const [childName, setChildName] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState({ topic: false, protagonist: false, childName: false });
 
   // Fetch stories using Convex useQuery
   const stories = useQuery("stories:list" as any, user?.uid ? { userId: user.uid } : "skip" as any);
+
+  const handleSuggest = async (field: 'topic' | 'protagonist' | 'childName') => {
+    setIsSuggesting(prev => ({ ...prev, [field]: true }));
+    try {
+      const suggestion = await suggestProposition({ field });
+      if (field === 'topic') setTopic(suggestion);
+      else if (field === 'protagonist') setProtagonist(suggestion);
+      else if (field === 'childName') setChildName(suggestion);
+    } catch (e) {
+      console.error("Error generating suggestion:", e);
+    } finally {
+      setIsSuggesting(prev => ({ ...prev, [field]: false }));
+    }
+  };
 
   const handleCreateStory = async () => {
     if (!topic || !protagonist || !childName) return;
@@ -158,27 +174,56 @@ const HomeScreen = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Create Magical Story</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Topic (e.g., A brave little rabbit)"
-              placeholderTextColor="#94a3b8"
-              value={topic}
-              onChangeText={setTopic}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Protagonist (e.g., Pompon)"
-              placeholderTextColor="#94a3b8"
-              value={protagonist}
-              onChangeText={setProtagonist}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Child Name (e.g., Alice)"
-              placeholderTextColor="#94a3b8"
-              value={childName}
-              onChangeText={setChildName}
-            />
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Topic (e.g., A brave little rabbit)"
+                placeholderTextColor="#94a3b8"
+                value={topic}
+                onChangeText={setTopic}
+              />
+              <TouchableOpacity 
+                style={styles.suggestionButton} 
+                onPress={() => handleSuggest('topic')}
+                disabled={isSuggesting.topic}
+              >
+                {isSuggesting.topic ? <ActivityIndicator size="small" color="#6366f1" /> : <Wand2 size={20} color="#6366f1" />}
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Protagonist (e.g., Pompon)"
+                placeholderTextColor="#94a3b8"
+                value={protagonist}
+                onChangeText={setProtagonist}
+              />
+              <TouchableOpacity 
+                style={styles.suggestionButton} 
+                onPress={() => handleSuggest('protagonist')}
+                disabled={isSuggesting.protagonist}
+              >
+                {isSuggesting.protagonist ? <ActivityIndicator size="small" color="#6366f1" /> : <Wand2 size={20} color="#6366f1" />}
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Child Name (e.g., Alice)"
+                placeholderTextColor="#94a3b8"
+                value={childName}
+                onChangeText={setChildName}
+              />
+              <TouchableOpacity 
+                style={styles.suggestionButton} 
+                onPress={() => handleSuggest('childName')}
+                disabled={isSuggesting.childName}
+              >
+                {isSuggesting.childName ? <ActivityIndicator size="small" color="#6366f1" /> : <Wand2 size={20} color="#6366f1" />}
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.buttonRow}>
               <TouchableOpacity
@@ -369,16 +414,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
+  inputContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
   input: {
     backgroundColor: '#f1f5f9',
     borderRadius: 12,
     paddingHorizontal: 16,
+    paddingRight: 48,
     height: 56,
     color: '#1e293b',
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#e2e8f0',
-    marginBottom: 16,
+  },
+  suggestionButton: {
+    position: 'absolute',
+    right: 12,
+    padding: 8,
   },
   buttonRow: {
     flexDirection: 'row',
