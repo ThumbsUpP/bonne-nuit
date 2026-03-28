@@ -104,7 +104,7 @@ const HomeScreen = () => {
         let fullPrompt = `Style: ${story.artStyle}.\nCharacter: ${story.characterDescription}.\nScene: ${page.imageDescription}.\nEnsure the character appearance is consistent with the description.\nClear and focused composition, visually balanced, ${story.artStyle}.`.trim();
 
         if (referenceImageBase64) {
-          fullPrompt += `\nUse the attached character turnaround image as a strict visual reference.`;
+          fullPrompt += `\nUse the attached character turnaround image as a strict visual reference. For any text in the image, use the exact same font and typography style as established in the reference image.`;
         }
 
         await generateImageAction({
