@@ -1,6 +1,8 @@
+"use node";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
+import sharp from "sharp";
 
 export const generateImage = action({
     args: {
@@ -21,7 +23,8 @@ export const generateImage = action({
         const modelName = 'models/gemini-3-pro-image-preview'; // Nano Banana Pro
         const url = `${baseUrl}/${modelName}:generateContent?key=${apiKey}`;
 
-        const parts: any[] = [{ text: args.prompt }];
+        // Enforce 16:9 hint in the prompt
+        const parts: any[] = [{ text: args.prompt + " (Generate in 16:9 landscape aspect ratio)" }];
         if (args.referenceImageBase64) {
             parts.push({
                 inlineData: {
@@ -72,13 +75,14 @@ export const generateImage = action({
             throw new Error('No image data found in response');
         }
 
-        // 5. Convert base64 to Blob
-        const binaryString = atob(base64Data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        const blob = new Blob([bytes], { type: "image/png" });
+        // 5. Convert base64 to Blob, apply sharp compression and force 16:9 ratio
+        // 1024x576 is exactly 16:9 and close to the ~1080px resolution limit.
+        const compressedBuffer = await sharp(Buffer.from(base64Data, "base64"))
+            .resize({ width: 1024, height: 576, fit: 'cover', position: 'center' })
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        const blob = new Blob([new Uint8Array(compressedBuffer)], { type: "image/webp" });
 
         // 6. Store in Convex Storage
         const storageId = await ctx.storage.store(blob);
@@ -111,7 +115,7 @@ export const generateTurnaroundImage = action({
         const payload = {
             contents: [
                 {
-                    parts: [{ text: args.prompt }]
+                    parts: [{ text: args.prompt + " (Generate in 16:9 landscape aspect ratio)" }]
                 }
             ]
         };
@@ -147,12 +151,13 @@ export const generateTurnaroundImage = action({
             throw new Error('No image data found in response');
         }
 
-        const binaryString = atob(base64Data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        const blob = new Blob([bytes], { type: "image/png" });
+        // Force 16:9 aspect ratio for turnaround images as well
+        const compressedBuffer = await sharp(Buffer.from(base64Data, "base64"))
+            .resize({ width: 1024, height: 576, fit: 'cover', position: 'center' })
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        const blob = new Blob([new Uint8Array(compressedBuffer)], { type: "image/webp" });
 
         const storageId = await ctx.storage.store(blob);
 

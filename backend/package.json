@@ -16,6 +16,7 @@
     "@google/generative-ai": "^0.24.1",
     "convex": "^1.32.0",
     "dotenv": "^17.2.3",
+    "sharp": "^0.34.5",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
@@ -24,6 +25,18 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "current",
+        "linux"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ]
+    }
   },
   "packageManager": "pnpm@9.15.9+sha256.cf86a7ad764406395d4286a6d09d730711720acc6d93e9dce9ac7ac4dc4a28a7"
 }
